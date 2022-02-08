@@ -53,17 +53,17 @@ const Form = () => {
   const onSubmit = (formData: Department) => {
     const config: AxiosRequestConfig = {
       method: isEditing ? 'PUT' : 'POST',
-      url: isEditing ? `/products/${employeeId}` : '/products',
+      url: isEditing ? `/employees/${employeeId}` : '/employees',
       withCredentials: true,
     };
 
     requestBackend(config)
       .then(() => {
-        toast.info('Produto cadastrado com sucesso');
-        history.push('/admin/products');
+        toast.info('Cadastrado com sucesso');
+        history.push('/admin/employees');
       })
       .catch(() => {
-        toast.error('Erro ao cadastrar produto');
+        toast.error('Erro ao cadastrar employee');
       });
   };
 
@@ -76,7 +76,7 @@ const Form = () => {
       <div className="base-card employee-crud-form-card">
         <h1 className="employee-crud-form-title">INFORME OS DADOS</h1>
 
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)} data-testid="form">
           <div className="row employee-crud-inputs-container">
             <div className="col employee-crud-inputs-left-container">
               <div className="margin-bottom-30">
