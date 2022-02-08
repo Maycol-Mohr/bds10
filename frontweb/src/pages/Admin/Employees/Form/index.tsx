@@ -111,44 +111,48 @@ const Form = () => {
                 <div className="invalid-feedback d-block"></div>
               </div>
 
-              <label htmlFor="categories" className="d-none">
-                Categorias
-              </label>
-              <Controller
-                name="department"
-                rules={{ required: true }}
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    options={selectCategories}
-                    classNamePrefix="product-crud-select"
-                    isMulti
-                    getOptionLabel={(department: Department) => department.name}
-                    getOptionValue={(department: Department) =>
-                      String(department.id)
-                    }
-                    inputId="Departamento"
-                  />
+              <div className="margin-bottom-30">
+                <label htmlFor="departments" className="d-none">
+                  Departamento
+                </label>
+                <Controller
+                  name="department"
+                  rules={{ required: true }}
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={selectCategories}
+                      classNamePrefix="product-crud-select"
+                      isMulti
+                      getOptionLabel={(department: Department) =>
+                        department.name
+                      }
+                      getOptionValue={(department: Department) =>
+                        String(department.id)
+                      }
+                      inputId="departments"
+                    />
+                  )}
+                />
+                {errors.department && (
+                  <div className="invalid-feedback d-block">
+                    Campo obrigatorio
+                  </div>
                 )}
-              />
-              {errors.department && (
-                <div className="invalid-feedback d-block">
-                  Campo obrigatorio
-                </div>
-              )}
+              </div>
             </div>
-          </div>
-          <div className="employee-crud-buttons-container">
-            <button
-              className="btn btn-outline-danger employee-crud-button"
-              onClick={handleCancel}
-            >
-              CANCELAR
-            </button>
-            <button className="btn btn-primary employee-crud-button text-white">
-              SALVAR
-            </button>
+            <div className="employee-crud-buttons-container">
+              <button
+                className="btn btn-outline-danger employee-crud-button"
+                onClick={handleCancel}
+              >
+                CANCELAR
+              </button>
+              <button className="btn btn-primary employee-crud-button text-white">
+                SALVAR
+              </button>
+            </div>
           </div>
         </form>
       </div>
