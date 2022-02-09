@@ -22,7 +22,7 @@ const Form = () => {
 
   const history = useHistory();
 
-  const [selectCategories, setSelectCategories] = useState<Department[]>([]);
+  const [selectDepartments, setSelectDepartments] = useState<Department[]>([]);
 
   const {
     register,
@@ -34,7 +34,7 @@ const Form = () => {
 
   useEffect(() => {
     requestBackend({ url: '/departments' }).then((response) => {
-      setSelectCategories(response.data.content);
+      setSelectDepartments(response.data.content);
     });
   }, []);
 
@@ -50,10 +50,13 @@ const Form = () => {
     }
   }, [isEditing, employeeId, setValue]);
 
-  const onSubmit = (formData: Department) => {
+  const onSubmit = (formData: Employee) => {
+    const data = { ...formData };
+
     const config: AxiosRequestConfig = {
       method: isEditing ? 'PUT' : 'POST',
       url: isEditing ? `/employees/${employeeId}` : '/employees',
+      data,
       withCredentials: true,
     };
 
@@ -82,7 +85,7 @@ const Form = () => {
               <div className="margin-bottom-30">
                 <input
                   {...register('name', {
-                    required: 'Campo obrigatorio',
+                    required: 'Campo obrigatório',
                   })}
                   type="text"
                   className={`form-control base-input cor-branca  ${
@@ -92,13 +95,15 @@ const Form = () => {
                   name="name"
                   data-testid="name"
                 />
-                <div className="invalid-feedback d-block">Mensagem de erro</div>
+                <div className="invalid-feedback d-block">
+                  {errors.name?.message}
+                </div>
               </div>
 
               <div className="margin-bottom-30">
                 <input
-                  {...register('name', {
-                    required: 'Campo obrigatorio',
+                  {...register('email', {
+                    required: 'Campo obrigatório',
                   })}
                   type="text"
                   className={`form-control base-input cor-branca  ${
@@ -108,7 +113,9 @@ const Form = () => {
                   name="email"
                   data-testid="email"
                 />
-                <div className="invalid-feedback d-block"></div>
+                <div className="invalid-feedback d-block">
+                  {errors.email?.message}
+                </div>
               </div>
 
               <div className="margin-bottom-30">
@@ -122,7 +129,7 @@ const Form = () => {
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={selectCategories}
+                      options={selectDepartments}
                       classNamePrefix="product-crud-select"
                       isMulti
                       getOptionLabel={(department: Department) =>
@@ -137,7 +144,7 @@ const Form = () => {
                 />
                 {errors.department && (
                   <div className="invalid-feedback d-block">
-                    Campo obrigatorio
+                    Campo obrigatório
                   </div>
                 )}
               </div>
