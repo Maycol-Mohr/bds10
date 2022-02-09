@@ -11,7 +11,7 @@ import { AxiosRequestConfig } from 'axios';
 
 type controlComponentsData = {
   activePage: number;
-  //filterData: EmployeeFilterData;
+  //filterData: employee;
 };
 
 const List = () => {
@@ -20,25 +20,29 @@ const List = () => {
   const [controlComponentsData, setControlComponentsData] =
     useState<controlComponentsData>({
       activePage: 0,
-      //  filterData: { name: '', category: null },
+      //  filterData: { name: '', department: null },
     });
 
   const handlePageChange = (pageNumber: number) => {
     setControlComponentsData({
       activePage: pageNumber,
-      // filterData: controlComponentsData.filterData,
+      //filterData: controlComponentsData.filterData,
     });
   };
 
-  const getProducts = useCallback(() => {
+  const handleSubmitFilter = (data: Employee) => {
+    // setControlComponentsData({ activePage: 0, filterData: data });
+  };
+
+  const getEmployess = useCallback(() => {
     const config: AxiosRequestConfig = {
       method: 'GET',
-      url: `/products`,
+      url: `/employess`,
       params: {
         page: controlComponentsData.activePage,
         size: 3,
-        // name: controlComponentsData.filterData.name,
-        //categoryId: controlComponentsData.filterData.category?.id,
+        //   name: controlComponentsData.filterData.name,
+        // categoryId: controlComponentsData.filterData.department?.id,
       },
     };
     requestBackend(config).then((response) => {
@@ -47,8 +51,8 @@ const List = () => {
   }, [controlComponentsData]);
 
   useEffect(() => {
-    getProducts();
-  }, [getProducts]);
+    getEmployess();
+  }, [getEmployess]);
 
   return (
     <>
