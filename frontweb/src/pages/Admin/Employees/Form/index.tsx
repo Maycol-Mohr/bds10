@@ -153,6 +153,7 @@ const Form = () => {
                 )}
               </div>
             </div>
+
             <div className="employee-crud-buttons-container">
               <button
                 className="btn btn-outline-danger employee-crud-button"
