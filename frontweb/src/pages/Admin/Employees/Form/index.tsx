@@ -4,59 +4,37 @@ import { AxiosRequestConfig } from 'axios';
 import { useEffect, useState } from 'react';
 
 import { useForm, Controller } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
 import Select from 'react-select';
 import { Department } from 'types/department';
 import { Employee } from 'types/employee';
 import { requestBackend } from 'util/requests';
 import { toast } from 'react-toastify';
 
-type UrlParams = {
-  employeeId: string;
-};
-
 const Form = () => {
-  const { employeeId } = useParams<UrlParams>();
-
-  const isEditing = employeeId !== 'create';
-
   const history = useHistory();
 
-  const [selectDepartments, setSelectDepartments] = useState<Department[]>([]);
+  const [selectDepartment, setSelectDepartment] = useState<Department[]>([]);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
     control,
   } = useForm<Employee>();
 
   useEffect(() => {
-    requestBackend({ url: '/departments' }).then((response) => {
-      setSelectDepartments(response.data.content);
-    });
+    requestBackend({ url: '/departments', withCredentials: true }).then(
+      (response) => {
+        setSelectDepartment(response.data);
+      }
+    );
   }, []);
 
-  useEffect(() => {
-    if (isEditing) {
-      requestBackend({ url: `/employees/${employeeId}` }).then((response) => {
-        const employee = response.data as Employee;
-
-        setValue('name', employee.name);
-        setValue('email', employee.email);
-        setValue('department', employee.department);
-      });
-    }
-  }, [isEditing, employeeId, setValue]);
-
   const onSubmit = (formData: Employee) => {
-    const data = { ...formData };
-
     const config: AxiosRequestConfig = {
-      method: isEditing ? 'PUT' : 'POST',
-      url: isEditing ? `/employees/${employeeId}` : '/employees',
-      data,
+      method: 'POST',
+      url: '/employees',
+      data: formData,
       withCredentials: true,
     };
 
@@ -123,7 +101,7 @@ const Form = () => {
               </div>
 
               <div className="margin-bottom-30">
-                <label htmlFor="departments" className="d-none">
+                <label htmlFor="department" className="d-none">
                   Departamento
                 </label>
                 <Controller
@@ -133,16 +111,16 @@ const Form = () => {
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={selectDepartments}
+                      options={selectDepartment}
                       classNamePrefix="product-crud-select"
-                      isMulti
+                      placeholder="Departamento"
                       getOptionLabel={(department: Department) =>
                         department.name
                       }
                       getOptionValue={(department: Department) =>
                         String(department.id)
                       }
-                      inputId="departments"
+                      inputId="department"
                     />
                   )}
                 />

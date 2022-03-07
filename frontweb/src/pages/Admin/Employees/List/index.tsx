@@ -1,16 +1,17 @@
 import { AxiosRequestConfig } from 'axios';
+import EmployeeCard from 'components/EmployeeCard';
 import Pagination from 'components/Pagination';
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Employee } from 'types/employee';
 import { SpringPage } from 'types/vendor/spring';
+import { hasAnyRoles } from 'util/auth';
 import { requestBackend } from 'util/requests';
 
 import './styles.css';
 
 type controlComponentsData = {
   activePage: number;
-  filterData?: employee;
 };
 
 const List = () => {
@@ -19,29 +20,21 @@ const List = () => {
   const [controlComponentsData, setControlComponentsData] =
     useState<controlComponentsData>({
       activePage: 0,
-      filterData: { name: '', department: null },
     });
 
   const handlePageChange = (pageNumber: number) => {
     setControlComponentsData({
       activePage: pageNumber,
-      filterData: controlComponentsData.filterData,
     });
-  };
-
-  const handleSubmitFilter = (data: Employee) => {
-    setControlComponentsData({ activePage: 0, filterData: data });
   };
 
   const getEmployess = useCallback(() => {
     const config: AxiosRequestConfig = {
       method: 'GET',
-      url: `/employess`,
+      url: `/employees`,
       params: {
         page: controlComponentsData.activePage,
-        size: 3,
-        name: controlComponentsData.filterData.name,
-        departmentId: controlComponentsData.filterData.department?.id,
+        size: 4,
       },
     };
     requestBackend(config).then((response) => {
@@ -55,11 +48,19 @@ const List = () => {
 
   return (
     <>
-      <Link to="/admin/employees/create">
-        <button className="btn btn-primary text-white btn-crud-add">
-          ADICIONAR
-        </button>
-      </Link>
+      {hasAnyRoles(['ROLE_ADMIN']) ? (
+        <Link to="/admin/employees/create">
+          <button className="btn btn-primary text-white btn-crud-add">
+            ADICIONAR
+          </button>
+        </Link>
+      ) : (
+        <h1>Não tem</h1>
+      )}
+
+      {page?.content.map((employee) => (
+        <EmployeeCard key={employee.id} employee={employee} />
+      ))}
 
       <Pagination
         forcePage={page?.number}
